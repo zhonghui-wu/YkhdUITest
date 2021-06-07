@@ -19,6 +19,9 @@ class YkhdTest(unittest.TestCase):
     def setUpClass(cls):
         global date
         date = time.strftime('%Y%m%d')
+        photo = os.path.exists('./photo')
+        if not photo:
+            os.mkdir('photo')
         isExists = os.path.exists(f'./photo/{date}')
         if not isExists:
             os.mkdir(f'./photo/{date}')
