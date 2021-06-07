@@ -12,7 +12,7 @@ import os, phone
 from BeautifulReport import BeautifulReport
 
 
-class NhyktTest(unittest.TestCase):
+class YkhdTest(unittest.TestCase):
     global timelast, courseName, liveCourse, date
 
     @classmethod
@@ -31,8 +31,8 @@ class NhyktTest(unittest.TestCase):
             cls.chrome_options.add_argument('--headless')
             cls.chrome_options.add_argument('--disable-gpu')
             cls.chrome_options.add_argument('--force-device-scale-factor=1')
-            cls.driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', chrome_options=cls.chrome_options)
-            # cls.driver = webdriver.Chrome(chrome_options=cls.chrome_options)
+            # cls.driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', chrome_options=cls.chrome_options)
+            cls.driver = webdriver.Chrome(chrome_options=cls.chrome_options)
             cls.driver.get(adminHost)
             cls.driver.set_window_size(1920, 1080)
             cls.driver.implicitly_wait(5)
@@ -89,7 +89,7 @@ class NhyktTest(unittest.TestCase):
     def save_img(self, img_name):
         self.driver.save_screenshot(f'./img/{img_name}.png')
 
-    @BeautifulReport.add_test_img('NhyktTest_test001AdminLogin')
+    @BeautifulReport.add_test_img('YkhdTest_test001AdminLogin')
     def test001AdminLogin(self):  # admin登录
         '''admin登录'''
         try:
@@ -133,12 +133,12 @@ class NhyktTest(unittest.TestCase):
 
         except:
             print('admin登录失败')
-            self.save_img('NhyktTest_test001AdminLogin')
+            self.save_img('YkhdTest_test001AdminLogin')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test002AddCourse')
+    @BeautifulReport.add_test_img('YkhdTest_test002AddCourse')
     def test002AddCourse(self):  # 新增学科
         '''admin新增学科删除学科'''
 
@@ -194,12 +194,12 @@ class NhyktTest(unittest.TestCase):
                     break
         except:
             print('新增学科失败')
-            self.save_img('NhyktTest_test002AddCourse')
+            self.save_img('YkhdTest_test002AddCourse')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test003AddSchool')
+    @BeautifulReport.add_test_img('YkhdTest_test003AddSchool')
     def test003AddSchool(self):  # 新增学校
         '''admin新增学校和删除学校'''
         try:
@@ -254,12 +254,12 @@ class NhyktTest(unittest.TestCase):
                     break
         except:
             print('新增学校失败')
-            self.save_img('NhyktTest_test003AddSchool')
+            self.save_img('YkhdTest_test003AddSchool')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test004AddTeacher')
+    @BeautifulReport.add_test_img('YkhdTest_test004AddTeacher')
     def test004AddTeacher(self):  # 新增老师
         '''admin新增老师'''
         global newTeacherPhone
@@ -331,12 +331,12 @@ class NhyktTest(unittest.TestCase):
                     break
         except:
             print('新增老师失败')
-            self.save_img('NhyktTest_test004AddTeacher')
+            self.save_img('YkhdTest_test004AddTeacher')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test005AddStudent')
+    @BeautifulReport.add_test_img('YkhdTest_test005AddStudent')
     def test005AddStudent(self):  # 新增学生
         '''admin新增学生'''
         global newStudentPhone
@@ -397,13 +397,13 @@ class NhyktTest(unittest.TestCase):
                     break
         except:
             print('新增学生失败')
-            self.save_img('NhyktTest_test005AddStudent')
+            self.save_img('YkhdTest_test005AddStudent')
             traceback.print_exc()
             assert False
 
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test006AddTourClass')
+    @BeautifulReport.add_test_img('YkhdTest_test006AddTourClass')
     def test006AddTourClass(self): # 新增巡课
         '''admin新增巡课'''
         global timelast
@@ -436,12 +436,12 @@ class NhyktTest(unittest.TestCase):
                     print('新增巡课失败')
         except:
             print('新增巡课失败')
-            self.save_img('NhyktTest_test006AddTourClass')
+            self.save_img('YkhdTest_test006AddTourClass')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test007AddLiveCourse')
+    @BeautifulReport.add_test_img('YkhdTest_test007AddLiveCourse')
     def test007AddLiveCourse(self):
         '''admin添加直播课'''
         global courseName
@@ -496,11 +496,11 @@ class NhyktTest(unittest.TestCase):
             self.driver.find_element_by_css_selector('[class="ant-btn ant-btn-primary"]').click()
         except:
             print('新增课程失败')
-            self.save_img('NhyktTest_test007AddLiveCourse')
+            self.save_img('YkhdTest_test007AddLiveCourse')
             assert False
         return courseName
 
-    @BeautifulReport.add_test_img('NhyktTest_test008CreateLive')
+    @BeautifulReport.add_test_img('YkhdTest_test008CreateLive')
     def test008CreateLive(self):
         '''admin排课'''
         global liveCourse
@@ -559,12 +559,12 @@ class NhyktTest(unittest.TestCase):
                     print('排课失败')
         except:
             print('排课失败')
-            self.save_img('NhyktTest_test008CreateLive')
+            self.save_img('YkhdTest_test008CreateLive')
             traceback.print_exc()
             assert False
         return liveCourse
 
-    @BeautifulReport.add_test_img('NhyktTest_test009TeacherLogin')
+    @BeautifulReport.add_test_img('YkhdTest_test009TeacherLogin')
     def test009TeacherLogin(self):
         '''老师登录'''
         try:
@@ -609,12 +609,12 @@ class NhyktTest(unittest.TestCase):
                 print('未登录')
         except:
             print('老师登录失败')
-            self.save_img('NhyktTest_test009TeacherLogin')
+            self.save_img('YkhdTest_test009TeacherLogin')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test010TeacherLive')
+    @BeautifulReport.add_test_img('YkhdTest_test010TeacherLive')
     def test010TeacherLive(self):
         '''老师上课'''
         try:
@@ -651,12 +651,12 @@ class NhyktTest(unittest.TestCase):
                 self.driver.save_screenshot(f'./photo/{date}/test010TeacherLiveSucceed.png')
         except:
             print('老师直播失败')
-            self.save_img('NhyktTest_test010TeacherLive')
+            self.save_img('YkhdTest_test010TeacherLive')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test011StudentLogin')
+    @BeautifulReport.add_test_img('YkhdTest_test011StudentLogin')
     def test011StudentLogin(self):
         '''学生登录'''
         try:
@@ -700,12 +700,12 @@ class NhyktTest(unittest.TestCase):
                 self.driver.save_screenshot(f'./photo/{date}/test011StudentLoginSucceed.png')
         except:
             print('学生登录失败')
-            self.save_img('NhyktTest_test011StudentLogin')
+            self.save_img('YkhdTest_test011StudentLogin')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test012StudentIntoLive')
+    @BeautifulReport.add_test_img('YkhdTest_test012StudentIntoLive')
     def test012StudentIntoLive(self):
         '''学生进入直播间上课'''
         try:
@@ -724,12 +724,12 @@ class NhyktTest(unittest.TestCase):
                 self.driver.save_screenshot(f'./photo/{date}/test012StudentIntoLiveSucceed.png')
         except:
             print('学生进入直播间失败')
-            self.save_img('NhyktTest_test012StudentIntoLive')
+            self.save_img('YkhdTest_test012StudentIntoLive')
             traceback.print_exc()
             assert False
         return
 
-    @BeautifulReport.add_test_img('NhyktTest_test013Clear')
+    @BeautifulReport.add_test_img('YkhdTest_test013Clear')
     def test013Clear(self):
         '''老师下课，删除排课信息，删除新增的课程'''
         try:
@@ -789,7 +789,7 @@ class NhyktTest(unittest.TestCase):
                 break
         except:
             traceback.print_exc()
-            self.save_img('NhyktTest_test013Clear')
+            self.save_img('YkhdTest_test013Clear')
             assert False
         return
 
