@@ -527,7 +527,7 @@ class YkhdTest(unittest.TestCase):
             nowMinute = nowTime[2] + nowTime[3]
             nowHour = nowTime[0] + nowTime[1]
             # 开始时间
-            if int(nowMinute) >= 58:
+            if int(nowMinute) >= 56:
                 subscript1 = int(browserHour.text) + 1  # 下标
                 allHour[subscript1].click()
             else:
