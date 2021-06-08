@@ -1,3 +1,4 @@
+# encoding: utf-8
 import unittest, os
 from BeautifulReport import BeautifulReport
 from BeautifulReport.BeautifulReport import HTML_IMG_TEMPLATE
@@ -30,4 +31,7 @@ def force_attach_image(img_nm):
 
 if __name__ == '__main__':
     # 生成测试报告
-    testBeautifulReport("ykhd.py", "report", "南海云课堂管理后台回归流程测试")
+    testBeautifulReport("ykhd.py", "report", "优课互动管理后台回归流程测试")
+
+
+
