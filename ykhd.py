@@ -35,7 +35,7 @@ class YkhdTest(unittest.TestCase):
             cls.chrome_options.add_argument('--disable-gpu')
             cls.chrome_options.add_argument('--force-device-scale-factor=1')
             # cls.driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', chrome_options=cls.chrome_options)
-            cls.driver = webdriver.Chrome(chrome_options=cls.chrome_options)
+            cls.driver = webdriver.Chrome()#chrome_options=cls.chrome_options)
             cls.driver.get(adminHost)
             cls.driver.set_window_size(1920, 1080)
             cls.driver.implicitly_wait(5)
@@ -504,7 +504,6 @@ class YkhdTest(unittest.TestCase):
         '''admin排课'''
         try:
             # 进入快速排课
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/div').click()
             self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/ul/li[1]').click()
             sleep(1)
             self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[1].click()
@@ -757,6 +756,12 @@ class YkhdTest(unittest.TestCase):
                 print('学生进入直播间成功')
                 print('学生进入直播间测试正常')
                 self.driver.save_screenshot(f'./photo/{date}/test012StudentIntoLiveSucceed.png')
+            # 获取所有的浏览器句柄
+            allHandles = self.driver.window_handles
+            self.driver.switch_to.window(allHandles[2])
+            # 老师关闭直播
+            self.driver.find_element_by_css_selector('[class="tic-btn headerbtn end red"]').click()
+            self.driver.find_element_by_css_selector('[class="ivu-btn ivu-btn-primary ivu-btn-large"]').click()
         except:
             print('学生进入直播间失败')
             self.save_img('YkhdTest_test012StudentIntoLive')
@@ -768,12 +773,7 @@ class YkhdTest(unittest.TestCase):
     def test013Clear(self):
         '''老师下课，删除排课信息，删除新增的课程'''
         try:
-            # 获取所有的浏览器句柄
             allHandles = self.driver.window_handles
-            self.driver.switch_to.window(allHandles[2])
-            # 老师关闭直播
-            self.driver.find_element_by_css_selector('[class="tic-btn headerbtn end red"]').click()
-            self.driver.find_element_by_css_selector('[class="ivu-btn ivu-btn-primary ivu-btn-large"]').click()
             # admin删除创建的直播课
             self.driver.switch_to.window(allHandles[0])
             self.driver.execute_script("var q=document.documentElement.scrollTop=10000")

@@ -10,10 +10,11 @@ from config import imgFile, adminHost, teacherHost, studentHost, adminLoginName,
 from config import teacherLoginName, teacherPassWord, studentLoginName, studentPassWord
 import os, phone
 from BeautifulReport import BeautifulReport
+from beautifulReport import testBeautifulReport
 
 
 class YkhdTest(unittest.TestCase):
-    global timelast, courseName, liveCourse, date
+    global timelast, courseName,  date, teacherID, studentID, teacherName
 
     @classmethod
     def setUpClass(cls):
@@ -50,7 +51,7 @@ class YkhdTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        # cls.driver.quit()
+        cls.driver.quit()
         print("-----------测试结束！结果发送中。。。-----------")
 
     def GetCode(self, file):  # 获取图片验证码
@@ -151,9 +152,13 @@ class YkhdTest(unittest.TestCase):
             sleep(1)
             # 将屏幕滚动到最下面
             self.driver.execute_script("var q=document.documentElement.scrollTop=10000")
-            # 点击输入页数，进入最后一页
-            self.driver.find_element_by_xpath('//*[@class="ant-pagination-options-quick-jumper"]/input').send_keys(
-                '100000\n')
+            try:
+                # 点击输入页数，进入最后一页
+                self.driver.find_element_by_xpath('//*[@class="ant-pagination-options-quick-jumper"]/input').send_keys(
+                    '100000\n')
+            except:
+                self.driver.find_elements_by_xpath('//*[@class="ant-pagination-options-quick-jumper"]/input')[
+                    1].send_keys('100000\n')
             sleep(1)
             n = 0
             all = self.driver.find_elements_by_xpath('//*[@class="subjectManagement"]/div//table/tbody/tr')
@@ -188,11 +193,11 @@ class YkhdTest(unittest.TestCase):
                 if "rock测试" in name.text:
                     print('学科添加成功，学科新增功能测试正常！')
                     self.driver.save_screenshot(f'./photo/{date}/test002AddCourseSucceed.png')
-                    # 下面是删除学科
-                    deletes = name.find_elements_by_xpath('//*[@class="subjectManagement"]/div//table/tbody/tr/td/a[2]')
-                    deletes[x - 1].click()
-                    sleep(1)
-                    self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[2].click()
+                    # # 下面是删除学科
+                    # deletes = name.find_elements_by_xpath('//*[@class="subjectManagement"]/div//table/tbody/tr/td/a[2]')
+                    # deletes[x - 1].click()
+                    # sleep(1)
+                    # self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[2].click()
                     break
         except:
             print('新增学科失败')
@@ -249,10 +254,10 @@ class YkhdTest(unittest.TestCase):
                     print('学校新增功能测试正常')
                     self.driver.save_screenshot(f'./photo/{date}/test003AddSchoolSucceed.png')
                     # 下面是删除学校
-                    dele = aschool.find_elements_by_css_selector('[class="option-danger-color"]')
-                    dele[n-1].click()
-                    sleep(1)
-                    self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[2].click()
+                    # dele = aschool.find_elements_by_css_selector('[class="option-danger-color"]')
+                    # dele[n-1].click()
+                    # sleep(1)
+                    # self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[2].click()
                     break
         except:
             print('新增学校失败')
@@ -264,7 +269,7 @@ class YkhdTest(unittest.TestCase):
     @BeautifulReport.add_test_img('YkhdTest_test004AddTeacher')
     def test004AddTeacher(self):  # 新增老师
         '''admin新增老师'''
-        global newTeacherPhone
+        global newTeacherPhone, teacherID, teacherName
         try:
             self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/div').click()
             self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/ul/li[1]').click()
@@ -274,7 +279,9 @@ class YkhdTest(unittest.TestCase):
             sleep(1)
             teacherFrom = self.driver.find_elements_by_css_selector('[class="ant-input"]')
             # 老师姓名
-            teacherFrom[0].send_keys('rock测试')
+            timelast = int(time.time() * 10000) % 10000
+            teacherName = 'rock测试' + str(timelast)
+            teacherFrom[0].send_keys(teacherName)
             # 老师手机号
             teacherFrom[1].send_keys('131' + str(phone.Phone))
             # 老师教龄
@@ -286,8 +293,10 @@ class YkhdTest(unittest.TestCase):
             self.driver.execute_script("var q=document.documentElement.scrollTop=10000")
             # 选择所属学校
             self.driver.find_elements_by_css_selector('[class="ant-select-selection__placeholder"]')[1].click()
-            self.driver.find_elements_by_css_selector('[class="ant-select-dropdown-menu-item"]')[0].click()
+            sleep(1)
+            self.driver.find_element_by_xpath('//*[@class="ant-select-dropdown-content"]/ul/li[1]').click()
             # 选择学科
+            sleep(1)
             self.driver.find_elements_by_css_selector('[class="ant-select-selection__placeholder"]')[2].click()
             self.driver.find_element_by_css_selector(
                 'li.ant-select-dropdown-menu-item.ant-select-dropdown-menu-item-active').click()
@@ -327,9 +336,14 @@ class YkhdTest(unittest.TestCase):
             sleep(1)
             teacherListPhone = self.driver.find_elements_by_xpath('//*[@class="ant-table-tbody"]/tr/td[4]')
             self.assertTrue(teacherListPhone)
+            n = 0
             for i in teacherListPhone:
+                n += 1
                 if int(newTeacherPhone)-1 == int(i.text):
                     print('新增老师功能测试正常')
+                    # 获取老师账号
+                    teacherID = self.driver.find_elements_by_xpath('//*[@class="ant-table-tbody"]/tr/td[2]')[n-1].text
+                    print(teacherID)
                     self.driver.save_screenshot(f'./photo/{date}/test004AddTeacherSucceed.png')
                     break
         except:
@@ -342,8 +356,9 @@ class YkhdTest(unittest.TestCase):
     @BeautifulReport.add_test_img('YkhdTest_test005AddStudent')
     def test005AddStudent(self):  # 新增学生
         '''admin新增学生'''
-        global newStudentPhone
+        global newStudentPhone, studentID
         try:
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/div').click()
             self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/ul/li[2]').click()
             sleep(1)
             self.driver.find_element_by_xpath('//*[@class="button_group"]/button[1]').click()
@@ -351,7 +366,9 @@ class YkhdTest(unittest.TestCase):
             sleep(1)
             studentFrom = self.driver.find_elements_by_css_selector('[class="ant-input"]')
             # 输入学生姓名
-            studentFrom[0].send_keys('rock测试')
+            timelast = int(time.time() * 10000) % 10000
+            studentName = 'rock测试' + str(timelast)
+            studentFrom[0].send_keys(studentName)
             # 输入学生家长手机号
             studentFrom[2].send_keys('132' + str(phone.Phone))
             # 选择生日
@@ -360,11 +377,11 @@ class YkhdTest(unittest.TestCase):
             # 选择学校
             sleep(1)
             self.driver.find_elements_by_css_selector('[class="ant-select-selection__placeholder"]')[0].click()
-            self.driver.find_elements_by_css_selector('[class="ant-select-dropdown-menu-item"]')[0].click()
+            sleep(1)
+            self.driver.find_element_by_xpath('//*[@class="ant-select-dropdown-content"]/ul/li[1]').click()
             # 选择年级
             self.driver.find_elements_by_css_selector('[class="ant-select-selection__placeholder"]')[1].click()
-            self.driver.find_element_by_css_selector(
-                'li.ant-select-dropdown-menu-item.ant-select-dropdown-menu-item-active').click()
+            self.driver.find_element_by_xpath('//*[@class="ant-select-dropdown-content"]/ul/li[4]').click()
             # 点击提交
             self.driver.find_element_by_css_selector('[class="addbtn ant-btn ant-btn-primary"]').click()
             while True:
@@ -394,8 +411,12 @@ class YkhdTest(unittest.TestCase):
             sleep(1)
             studentListPhone = self.driver.find_elements_by_xpath('//*[@class="ant-table-tbody"]/tr/td[4]')
             self.assertTrue(studentListPhone)
+            n = 0
             for i in studentListPhone:
+                n += 1
                 if int(newStudentPhone)-1 == int(i.text):
+                    studentID = self.driver.find_elements_by_xpath('//*[@class="ant-table-tbody"]/tr/td[2]')[n - 1].text
+                    print(studentID)
                     print('新增学生成功')
                     print('新增学生功能测试正常')
                     self.driver.save_screenshot(f'./photo/{date}/test005AddStudentSucceed.png')
@@ -413,8 +434,8 @@ class YkhdTest(unittest.TestCase):
     @BeautifulReport.add_test_img('YkhdTest_test006AddTourClass')
     def test006AddTourClass(self):  # 新增巡课
         '''admin新增巡课'''
-        global timelast
         try:
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/div').click()
             self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/ul/li[3]').click()
             sleep(1)
             self.driver.find_element_by_xpath('//*[@class="button_group"]/button[1]').click()
@@ -428,7 +449,7 @@ class YkhdTest(unittest.TestCase):
             self.driver.find_elements_by_css_selector('[class="ant-calendar-date"]')[0].click()
             # 所属学校
             self.driver.find_elements_by_css_selector('[class="ant-select-selection__placeholder"]')[0].click()
-            self.driver.find_elements_by_css_selector('[class="ant-select-dropdown-menu-item"]')[0].click()
+            self.driver.find_element_by_xpath('//*[@class="ant-select-dropdown-content"]/ul/li[1]').click()
             # 提交
             self.driver.find_element_by_css_selector('[class="addbtn ant-btn ant-btn-primary"]').click()
             # 获取巡课列表
@@ -482,7 +503,7 @@ class YkhdTest(unittest.TestCase):
             sleep(1)
             self.driver.find_element_by_css_selector('[class="addbtn ant-btn ant-btn-primary"]').click()
             # 获取温馨提示弹窗
-            sleep(1)
+            sleep(2)
             allCourseName = self.driver.find_elements_by_xpath('//*[@class ="ant-table-row ant-table-row-level-0"]/td[3]')
             self.assertTrue(allCourseName)
             for i in allCourseName:
@@ -527,7 +548,7 @@ class YkhdTest(unittest.TestCase):
             nowMinute = nowTime[2] + nowTime[3]
             nowHour = nowTime[0] + nowTime[1]
             # 开始时间
-            if int(nowMinute) >= 58:
+            if int(nowMinute) >= 56:
                 subscript1 = int(browserHour.text) + 1  # 下标
                 allHour[subscript1].click()
             else:
@@ -549,7 +570,7 @@ class YkhdTest(unittest.TestCase):
             self.driver.find_element_by_xpath('//*[@class="ant-select-dropdown-content"]/ul/li[1]').click()
             # 输入上课老师
             self.driver.find_elements_by_css_selector('[class="ant-select-selection__placeholder"]')[1].click()
-            self.driver.find_elements_by_css_selector('[class="ant-select-search__field"]')[1].send_keys('hans')
+            self.driver.find_elements_by_css_selector('[class="ant-select-search__field"]')[1].send_keys(teacherName)
             sleep(1)
             self.driver.find_element_by_css_selector('[class="title"]').click()
             # 添加关联课程
@@ -600,7 +621,7 @@ class YkhdTest(unittest.TestCase):
             allHandles = self.driver.window_handles
             self.driver.switch_to.window(allHandles[-1])
             sleep(1)
-            self.driver.find_elements_by_css_selector('span > input')[0].send_keys(teacherLoginName)
+            self.driver.find_elements_by_css_selector('span > input')[0].send_keys(teacherID)
             self.driver.find_elements_by_css_selector('span > input')[1].send_keys(teacherPassWord)
             code = self.GetCode(imgFile)
             # 输入验证码
@@ -691,7 +712,7 @@ class YkhdTest(unittest.TestCase):
             allHandles = self.driver.window_handles
             self.driver.switch_to.window(allHandles[-1])
             sleep(1)
-            self.driver.find_elements_by_css_selector('span > input')[0].send_keys(studentLoginName)
+            self.driver.find_elements_by_css_selector('span > input')[0].send_keys(studentID)
             self.driver.find_elements_by_css_selector('span > input')[1].send_keys(studentPassWord)
             code = self.GetCode(imgFile)
             # 输入验证码
@@ -757,6 +778,12 @@ class YkhdTest(unittest.TestCase):
                 print('学生进入直播间成功')
                 print('学生进入直播间测试正常')
                 self.driver.save_screenshot(f'./photo/{date}/test012StudentIntoLiveSucceed.png')
+            # 获取所有的浏览器句柄
+            allHandles = self.driver.window_handles
+            self.driver.switch_to.window(allHandles[2])
+            # 老师关闭直播
+            self.driver.find_element_by_css_selector('[class="tic-btn headerbtn end red"]').click()
+            self.driver.find_element_by_css_selector('[class="ivu-btn ivu-btn-primary ivu-btn-large"]').click()
         except:
             print('学生进入直播间失败')
             self.save_img('YkhdTest_test012StudentIntoLive')
@@ -764,48 +791,49 @@ class YkhdTest(unittest.TestCase):
             assert False
         return
 
-    @BeautifulReport.add_test_img('YkhdTest_test013Clear')
-    def test013Clear(self):
-        '''老师下课，删除排课信息，删除新增的课程'''
-        try:
-            # 获取所有的浏览器句柄
-            allHandles = self.driver.window_handles
-            self.driver.switch_to.window(allHandles[2])
-            # 老师关闭直播
-            self.driver.find_element_by_css_selector('[class="tic-btn headerbtn end red"]').click()
-            self.driver.find_element_by_css_selector('[class="ivu-btn ivu-btn-primary ivu-btn-large"]').click()
-            # admin删除创建的直播课
-            self.driver.switch_to.window(allHandles[0])
-            self.driver.execute_script("var q=document.documentElement.scrollTop=10000")
-            s = 0
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/div').click()
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/ul/li[3]').click()
-            allCourse = self.driver.find_elements_by_xpath('//*[@class="ant-table-row ant-table-row-level-0"]/td[3]')
-            self.assertTrue(allCourse)
-            for j in allCourse:
-                s += 1
-                if courseName == j.text:
-                    ele1 = self.driver.find_elements_by_xpath('//*[@class="ant-table-row ant-table-row-level-0"]')[s - 1]
-                    ele1.find_element_by_link_text('删除').click()
-                    sleep(1)
-                    self.driver.find_element_by_xpath('//*[@class="ant-modal-confirm-btns"]/button[2]').click()
-                    sleep(1)
-                    allCourse1 = self.driver.find_elements_by_xpath(
-                        '//*[@class="ant-table-row ant-table-row-level-0"]/td[3]')
-                    for course in allCourse1:
-                        if courseName == course.text:
-                            print('删除课程不成功')
-                        else:
-                            print('删除课程成功')
-                            break
-                break
-
-        except:
-            traceback.print_exc()
-            self.save_img('YkhdTest_test013Clear')
-            assert False
-        return
+    # @BeautifulReport.add_test_img('YkhdTest_test013Clear')
+    # def test013Clear(self):
+    #     '''老师下课，删除排课信息，删除新增的课程'''
+    #     try:
+    #         # 获取所有的浏览器句柄
+    #         allHandles = self.driver.window_handles
+    #         self.driver.switch_to.window(allHandles[2])
+    #         # 老师关闭直播
+    #         self.driver.find_element_by_css_selector('[class="tic-btn headerbtn end red"]').click()
+    #         self.driver.find_element_by_css_selector('[class="ivu-btn ivu-btn-primary ivu-btn-large"]').click()
+    #         # admin删除创建的直播课
+    #         self.driver.switch_to.window(allHandles[0])
+    #         self.driver.execute_script("var q=document.documentElement.scrollTop=10000")
+    #         s = 0
+    #         self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/div').click()
+    #         self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/ul/li[3]').click()
+    #         allCourse = self.driver.find_elements_by_xpath('//*[@class="ant-table-row ant-table-row-level-0"]/td[3]')
+    #         self.assertTrue(allCourse)
+    #         for j in allCourse:
+    #             s += 1
+    #             if courseName == j.text:
+    #                 ele1 = self.driver.find_elements_by_xpath('//*[@class="ant-table-row ant-table-row-level-0"]')[s - 1]
+    #                 ele1.find_element_by_link_text('删除').click()
+    #                 sleep(1)
+    #                 self.driver.find_element_by_xpath('//*[@class="ant-modal-confirm-btns"]/button[2]').click()
+    #                 sleep(1)
+    #                 allCourse1 = self.driver.find_elements_by_xpath(
+    #                     '//*[@class="ant-table-row ant-table-row-level-0"]/td[3]')
+    #                 for course in allCourse1:
+    #                     if courseName == course.text:
+    #                         print('删除课程不成功')
+    #                     else:
+    #                         print('删除课程成功')
+    #                         break
+    #             break
+    #
+    #     except:
+    #         traceback.print_exc()
+    #         self.save_img('YkhdTest_test013Clear')
+    #         assert False
+    #     return
 
 
 if __name__ == '__main__':
-    unittest.main()
+    # unittest.main()
+    testBeautifulReport("returnTest.py", "report1", "test")
