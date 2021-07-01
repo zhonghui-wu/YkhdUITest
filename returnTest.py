@@ -36,7 +36,7 @@ class YkhdTest(unittest.TestCase):
             cls.chrome_options.add_argument('--disable-gpu')
             cls.chrome_options.add_argument('--force-device-scale-factor=1')
             # cls.driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', chrome_options=cls.chrome_options)
-            cls.driver = webdriver.Chrome()#chrome_options=cls.chrome_options)
+            cls.driver = webdriver.Chrome(chrome_options=cls.chrome_options)
             cls.driver.get(adminHost)
             cls.driver.set_window_size(1920, 1080)
             cls.driver.implicitly_wait(5)
@@ -146,8 +146,8 @@ class YkhdTest(unittest.TestCase):
         '''admin新增学科删除学科'''
 
         try:
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[5]/div').click()
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[5]/ul/li[1]').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[3]/div').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[3]/ul/li[1]').click()
             self.driver.find_element_by_css_selector('[class=" ant-tabs-tab"]').click()
             sleep(1)
             # 将屏幕滚动到最下面
@@ -182,8 +182,13 @@ class YkhdTest(unittest.TestCase):
             sleep(1)
             self.driver.find_element_by_xpath('//*[@class="ant-modal-footer"]/div/button[2]').click()
             sleep(1)
-            self.driver.find_element_by_xpath('//*[@class="ant-pagination-options-quick-jumper"]/input').send_keys(
-                '100000\n')
+            try:
+                # 点击输入页数，进入最后一页
+                self.driver.find_element_by_xpath('//*[@class="ant-pagination-options-quick-jumper"]/input').send_keys(
+                    '100000\n')
+            except:
+                self.driver.find_elements_by_xpath('//*[@class="ant-pagination-options-quick-jumper"]/input')[
+                    1].send_keys('100000\n')
             x = 0
             sleep(1)
             all1 = self.driver.find_elements_by_xpath('//*[@class="subjectManagement"]/div//table/tbody/tr')
@@ -193,11 +198,11 @@ class YkhdTest(unittest.TestCase):
                 if "rock测试" in name.text:
                     print('学科添加成功，学科新增功能测试正常！')
                     self.driver.save_screenshot(f'./photo/{date}/test002AddCourseSucceed.png')
-                    # # 下面是删除学科
-                    # deletes = name.find_elements_by_xpath('//*[@class="subjectManagement"]/div//table/tbody/tr/td/a[2]')
-                    # deletes[x - 1].click()
-                    # sleep(1)
-                    # self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[2].click()
+                    # 下面是删除学科
+                    deletes = name.find_elements_by_xpath('//*[@class="subjectManagement"]/div//table/tbody/tr/td/a[2]')
+                    deletes[x - 1].click()
+                    sleep(1)
+                    self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[2].click()
                     break
         except:
             print('新增学科失败')
@@ -236,7 +241,7 @@ class YkhdTest(unittest.TestCase):
             # 学校简称
             schoolForm[1].send_keys('测试')
             # 学校标识码
-            schoolForm[2].send_keys('1111111111')
+            schoolForm[2].send_keys('11111111')
             # 学校类型
             self.driver.find_elements_by_css_selector('[class="select_option ant-select ant-select-enabled"]')[
                 0].click()
@@ -271,8 +276,8 @@ class YkhdTest(unittest.TestCase):
         '''admin新增老师'''
         global newTeacherPhone, teacherID, teacherName
         try:
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/div').click()
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/ul/li[1]').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/div').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/ul/li[1]').click()
             # 点击新增老师按钮
             self.driver.find_element_by_xpath('//*[@class="button_group"]/button[1]').click()
             # 老师信息表单
@@ -284,11 +289,6 @@ class YkhdTest(unittest.TestCase):
             teacherFrom[0].send_keys(teacherName)
             # 老师手机号
             teacherFrom[1].send_keys('131' + str(phone.Phone))
-            # 老师教龄
-            teacherFrom[2].send_keys('1')
-            # 选择老师生日
-            self.driver.find_element_by_css_selector('[class="ant-calendar-picker-input ant-input"]').click()
-            self.driver.find_elements_by_css_selector('[class="ant-calendar-date"]')[0].click()
             # 将屏幕滚动到最下面
             self.driver.execute_script("var q=document.documentElement.scrollTop=10000")
             # 选择所属学校
@@ -358,8 +358,7 @@ class YkhdTest(unittest.TestCase):
         '''admin新增学生'''
         global newStudentPhone, studentID
         try:
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/div').click()
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/ul/li[2]').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/ul/li[2]').click()
             sleep(1)
             self.driver.find_element_by_xpath('//*[@class="button_group"]/button[1]').click()
             # 填写学生基本信息
@@ -370,10 +369,7 @@ class YkhdTest(unittest.TestCase):
             studentName = 'rock测试' + str(timelast)
             studentFrom[0].send_keys(studentName)
             # 输入学生家长手机号
-            studentFrom[2].send_keys('132' + str(phone.Phone))
-            # 选择生日
-            self.driver.find_element_by_css_selector('[class="ant-calendar-picker-input ant-input"]').click()
-            self.driver.find_elements_by_css_selector('[class="ant-calendar-date"]')[0].click()
+            studentFrom[1].send_keys('132' + str(phone.Phone))
             # 选择学校
             sleep(1)
             self.driver.find_elements_by_css_selector('[class="ant-select-selection__placeholder"]')[0].click()
@@ -381,7 +377,7 @@ class YkhdTest(unittest.TestCase):
             self.driver.find_element_by_xpath('//*[@class="ant-select-dropdown-content"]/ul/li[1]').click()
             # 选择年级
             self.driver.find_elements_by_css_selector('[class="ant-select-selection__placeholder"]')[1].click()
-            self.driver.find_element_by_xpath('//*[@class="ant-select-dropdown-content"]/ul/li[4]').click()
+            self.driver.find_elements_by_xpath('//*[@class="ant-select-dropdown-content"]/ul/li[4]')[1].click()
             # 点击提交
             self.driver.find_element_by_css_selector('[class="addbtn ant-btn ant-btn-primary"]').click()
             while True:
@@ -435,8 +431,7 @@ class YkhdTest(unittest.TestCase):
     def test006AddTourClass(self):  # 新增巡课
         '''admin新增巡课'''
         try:
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/div').click()
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[4]/ul/li[3]').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/ul/li[3]').click()
             sleep(1)
             self.driver.find_element_by_xpath('//*[@class="button_group"]/button[1]').click()
             # 填写巡课信息
@@ -474,8 +469,8 @@ class YkhdTest(unittest.TestCase):
         '''admin添加直播课'''
         global courseName
         try:
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/div').click()
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/ul/li[3]').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[1]/div').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[1]/ul/li[3]').click()
             sleep(1)
             self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[1].click()
             # 输入课程名称
@@ -525,8 +520,8 @@ class YkhdTest(unittest.TestCase):
         '''admin排课'''
         try:
             # 进入快速排课
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/div').click()
-            self.driver.find_element_by_xpath('//*[@id="menu"]/li[2]/ul/li[1]').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[1]/div').click()
+            self.driver.find_element_by_xpath('//*[@id="menu"]/li[1]/ul/li[1]').click()
             sleep(1)
             self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[1].click()
             # 选择开课日期为今天
@@ -546,7 +541,7 @@ class YkhdTest(unittest.TestCase):
             browserMinute = \
             self.driver.find_elements_by_css_selector('[class="ant-time-picker-panel-select-option-selected"]')[1]
             nowMinute = nowTime[2] + nowTime[3]
-            nowHour = nowTime[0] + nowTime[1]
+            # nowHour = nowTime[0] + nowTime[1]
             # 开始时间
             if int(nowMinute) >= 56:
                 subscript1 = int(browserHour.text) + 1  # 下标
@@ -555,11 +550,18 @@ class YkhdTest(unittest.TestCase):
                 subscript2 = int(browserMinute.text) + 4
                 allMinute[subscript2].click()
             # 选择结束时间
-            self.driver.find_elements_by_css_selector('[class="ant-time-picker-input"]')[1].click()
-            etime = str(int(nowHour) + 2) + ':' + str(nowMinute)
-            sleep(1)
-            self.driver.find_element_by_css_selector('[class="ant-time-picker-panel-input "]').send_keys(etime)
-            self.driver.find_element_by_css_selector('[class="title"]').click()
+                # 选择结束时间
+                sleep(1)
+                self.driver.find_elements_by_css_selector('[class="ant-time-picker-input"]')[1].click()
+                sleep(1)
+                allHour1 = self.driver.find_elements_by_xpath('//*[@class="ant-time-picker-panel-select"][1]/ul/li')
+                browserHour1 = \
+                    self.driver.find_elements_by_css_selector('[class="ant-time-picker-panel-select-option-selected"]')[
+                        0]
+                sendHour = int(browserHour1.text) + 2  # 下标
+                allHour1[sendHour].click()
+                self.driver.save_screenshot(f'./photo/{date}/chooseEndtime1.png')
+                self.driver.find_element_by_css_selector('[class="title"]').click()
             # 选择面向年级
             self.driver.find_elements_by_css_selector('[class="ant-tag"]')[0].click()
             sleep(1)
@@ -621,6 +623,7 @@ class YkhdTest(unittest.TestCase):
             allHandles = self.driver.window_handles
             self.driver.switch_to.window(allHandles[-1])
             sleep(1)
+            self.driver.set_window_size(1920, 1080)
             self.driver.find_elements_by_css_selector('span > input')[0].send_keys(teacherID)
             self.driver.find_elements_by_css_selector('span > input')[1].send_keys(teacherPassWord)
             code = self.GetCode(imgFile)
@@ -712,6 +715,7 @@ class YkhdTest(unittest.TestCase):
             allHandles = self.driver.window_handles
             self.driver.switch_to.window(allHandles[-1])
             sleep(1)
+            self.driver.set_window_size(1920, 1080)
             self.driver.find_elements_by_css_selector('span > input')[0].send_keys(studentID)
             self.driver.find_elements_by_css_selector('span > input')[1].send_keys(studentPassWord)
             code = self.GetCode(imgFile)
@@ -782,8 +786,10 @@ class YkhdTest(unittest.TestCase):
             allHandles = self.driver.window_handles
             self.driver.switch_to.window(allHandles[2])
             # 老师关闭直播
+            sleep(1)
             self.driver.find_element_by_css_selector('[class="tic-btn headerbtn end red"]').click()
             self.driver.find_element_by_css_selector('[class="ivu-btn ivu-btn-primary ivu-btn-large"]').click()
+            sleep(1)
         except:
             print('学生进入直播间失败')
             self.save_img('YkhdTest_test012StudentIntoLive')
