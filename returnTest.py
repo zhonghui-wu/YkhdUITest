@@ -217,16 +217,13 @@ class YkhdTest(unittest.TestCase):
         try:
             sleep(1)
             self.driver.find_element_by_css_selector('[class=" ant-tabs-tab"]').click()
-            x = 0
             sleep(1)
             schools = self.driver.find_elements_by_css_selector('[class="ant-table-row ant-table-row-level-0"]')
             self.assertTrue(schools)
             for school in schools:
-                x += 1
                 if 'rock测试学校' in school.text:
                     # 下面是删除学校
-                    deles = school.find_elements_by_css_selector('[class="option-danger-color"]')
-                    deles[x - 1].click()
+                    school.find_element_by_css_selector('[class="option-danger-color"]').click()
                     sleep(1)
                     self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[2].click()
                     sleep(1)
@@ -250,17 +247,14 @@ class YkhdTest(unittest.TestCase):
             self.driver.find_element_by_xpath('//*[@class="ant-modal-footer"]/div/button[2]').click()
             # 获取第一页的学校列表
             sleep(2)
-            n = 0
             Allschool = self.driver.find_elements_by_css_selector('[class="ant-table-row ant-table-row-level-0"]')
             self.assertTrue(Allschool)
             for aschool in Allschool:
-                n += 1
                 if 'rock测试学校' in aschool.text:
                     print('学校新增功能测试正常')
                     self.driver.save_screenshot(f'./photo/{date}/test003AddSchoolSucceed.png')
                     # 下面是删除学校
-                    # dele = aschool.find_elements_by_css_selector('[class="option-danger-color"]')
-                    # dele[n-1].click()
+                    # school.find_element_by_css_selector('[class="option-danger-color"]').click()
                     # sleep(1)
                     # self.driver.find_elements_by_css_selector('[class="ant-btn ant-btn-primary"]')[2].click()
                     break
@@ -763,7 +757,7 @@ class YkhdTest(unittest.TestCase):
             # 关闭广告
             # self.driver.find_element_by_css_selector('[class="ant-modal-close-x"]').click()
             # 点击进入直播
-            self.driver.find_element_by_xpath('//*[@class="option_item online"]/span').click()
+            self.driver.find_element_by_css_selector('[class="btn_option"]').click()
             sleep(2)
             allHandles = self.driver.window_handles
             self.driver.switch_to.window(allHandles[-1])
